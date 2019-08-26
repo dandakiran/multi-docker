@@ -5,7 +5,7 @@ before_install:
   - docker build -t dandakiran/client-test -f ./client/Dockerfile.dev ./client
 script:
   - docker run -e CI=true dandakiran/client-test npm run test -- --coverage
-after_install:
+after_success:
   - docker build -t dandakiran/multi-client ./client
   - docker build -t dandakiran/multi-nginx ./nginx
   - docker build -t dandakiran/multi-server ./server
