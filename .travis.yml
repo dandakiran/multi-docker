@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t dandakiran/client-test -f ./client/Dockerfile.dev ./client
+script:
+  - docker run -e CI=true dandakiran/client-test npm run test -- --coverage
+after_install:
+  - docker build -t dandakiran/multi-client ./client
+  - docker build -t dandakiran/multi-nginx ./nginx
+  - docker build -t dandakiran/multi-server ./server
+  - docker build -t dandakiran/multi-worker ./worker
+
+#login to docker hub from docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+#push the images to docker hub
+  - docker push dandakiran/multi-client
+  - docker push dandakiran/multi-nginx
+  - docker push dandakiran/multi-server
+  - docker push dandakiran/multi-worker
